@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://Scripts/Action.gd" type="Script" id=1]
+[ext_resource path="res://Resources/Effects/E_Deal_damage.tres" type="Resource" id=2]
+
+[resource]
+script = ExtResource( 1 )
+name = "Strong slash"
+overview = "Deals a lot of damage"
+can_target = [ 1 ]
+mana_cost = 10
+power = 2.0
+accuracy_bonus = 0
+effects = [ ExtResource( 2 ) ]
+self_effects = [  ]
