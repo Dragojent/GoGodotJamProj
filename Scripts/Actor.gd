@@ -26,11 +26,22 @@ var effects := []
 signal try_toggle(actor, active)
 signal left_click(actor)
 signal lost_mana(actor, amount)
+signal hovered(actor, entered)
 
 func _ready():
 	$Click_area.connect("input_event", self, "_on_Click_area_input")
+	$Click_area.connect("mouse_entered", self, "_on_Click_area_mouse_entered")
+	$Click_area.connect("mouse_exited", self, "_on_Click_area_mouse_exited")
 
 	$Sprite.rect_pivot_offset = $Sprite.rect_size / 2
+
+func _on_Click_area_mouse_entered():
+	$Sprite.rect_scale = Vector2(1.1, 1.1)
+	emit_signal("hovered", self, true)
+
+func _on_Click_area_mouse_exited():
+	$Sprite.rect_scale = Vector2(1.0, 1.0)
+	emit_signal("hovered", self, false)
 
 # areas shouldn't overlap
 func _on_Click_area_input(_viewport, event, _shape_index):

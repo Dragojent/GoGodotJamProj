@@ -42,6 +42,11 @@ config/name="GGJ"
 run/main_scene="res://Scenes/Battle.tscn"
 config/icon="res://icon.png"
 
+[display]
+
+window/size/width=1920
+window/size/height=1080
+
 [input]
 
 end_turn={

@@ -13,6 +13,8 @@ onready var enemy_actors := $Actors/Enemies.get_children()
 onready var enemy_ai = $Actors/Enemy_AI
 onready var action_list = $GUI/Action_list_container/Action_list
 onready var mana_pool = $GUI/HBoxContainer/VBoxContainer/Mana/Background/Amount
+onready var actor_info = $GUI/Actor_info_container
+onready var camera = $Camera2D
 
 export(int) var max_mana := 100
 var mana : int
@@ -24,7 +26,6 @@ var target = null
 var targeting := false
 var active : Array
 
-
 func _ready():
 	randomize()
 	set_mana(max_mana)
@@ -34,12 +35,34 @@ func _ready():
 		actor.connect("try_toggle", self, "_on_Actor_try_toggle")
 		actor.connect("left_click", self, "_on_Actor_left_click")
 		actor.connect("lost_mana", self, "_on_Actor_lost_mana")
+		actor.connect("hovered", self, "_on_Actor_hovered")
 	for actor in enemy_actors:
 		actor.connect("left_click", self, "_on_Actor_left_click")
 		actor.connect("lost_mana", self, "_on_Actor_lost_mana")
+		actor.connect("hovered", self, "_on_Actor_hovered")
+
+func animate_combat(party_actor : Actor, enemy_actor : Actor):
+	# make this an animation
+	camera.get_node("Tween").interpolate_property(camera, "zoom", null, Vector2(0.5, 0.5), 0.05)
+	camera.get_node("Tween").start()
+
+	party_actor.get_node("Sprite").rect_scale = Vector2.ONE * 3
+	enemy_actor.get_node("Sprite").rect_scale = Vector2.ONE * 3
+
+	party_actor.get_node("Tween").interpolate_property(party_actor, "position", null, $Actors/Party_combat_position.position, 0.1)
+	enemy_actor.get_node("Tween").interpolate_property(enemy_actor, "position", null, $Actors/Enemy_combat_position.position, 0.1)
+
+	yield(get_tree().create_timer(1), "timeout")
+
+	party_actor.get_node("Sprite").rect_scale = Vector2.ONE
+	enemy_actor.get_node("Sprite").rect_scale = Vector2.ONE
+
+	camera.get_node("Tween").interpolate_property(camera, "zoom", null, Vector2(1, 1), 0.1)
+	camera.get_node("Tween").start()
 
 func end_turn():
 	current_turn = wrapi(current_turn + 1, 0, 2)
+	animate_combat(party_actors[0], enemy_actors[3])
 
 	reset_selections()
 
@@ -129,6 +152,13 @@ func _on_Actor_try_toggle(actor : Actor, activate : bool):
 		actor.deactivate()
 		active.erase(actor)
 
+func _on_Actor_hovered(actor: Actor, hovered : bool):
+	if hovered:
+		if actor.team == Actor.Team.PARTY:
+			actor_info.get_node("Party_actor_info").display_actor_info(actor)
+		if actor.team == Actor.Team.ENEMY:
+			actor_info.get_node("Enemy_actor_info").display_actor_info(actor)
+
 func _on_Actor_left_click(actor: Actor):
 	if !actor.tapped and actor.active and !targeting:
 		set_selected(actor)
@@ -158,20 +188,6 @@ func _on_Action_chosen(index : int):
 			selected_use_action()
 		else:
 			set_target(null)
-
-# func _roll() -> int:
-#     return rng.randi_range(1, 100)
-
-# func attack_roll(attacker : Actor, action_index : int, target : Actor):
-# 	var hit_score = (attacker.stats.accuracy + attacker.actions[action_index].accuracy_bonus 
-# 					- (target.stats.evasion + _roll()))
-
-# 	if hit_score <= 0:
-# 		return MISS
-# 	if hit_score > 0 and hit_score <= 100:
-# 		return HIT
-# 	if hit_score > 100:
-# 		return CRIT
 
 func selected_use_action():
 	selected.use_action(selected_action, target)
