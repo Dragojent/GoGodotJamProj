@@ -19,6 +19,7 @@ onready var camera = $Camera2D
 export(int) var max_mana := 100
 var mana : int
 
+var hovered = null
 var current_turn := 0
 var selected = null
 var selected_action = null
@@ -147,9 +148,11 @@ func _on_Actor_try_toggle(actor : Actor, activate : bool):
 
 	if activate:
 		actor.activate()
+		yield(actor, "animation_finished")
 		active.append(actor)
 	else:
 		actor.deactivate()
+		yield(actor, "animation_finished")
 		active.erase(actor)
 
 func _on_Actor_hovered(actor: Actor, hovered : bool):

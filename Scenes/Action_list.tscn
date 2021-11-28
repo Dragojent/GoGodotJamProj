@@ -5,20 +5,21 @@
 [node name="Action_list" type="MarginContainer"]
 anchor_right = 1.0
 anchor_bottom = 1.0
-margin_right = -824.0
-rect_min_size = Vector2( 800, 100 )
+margin_right = -424.0
+margin_bottom = -476.0
+rect_min_size = Vector2( 600, 100 )
+mouse_filter = 1
 script = ExtResource( 1 )
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="HBoxContainer" type="VBoxContainer" parent="."]
-margin_right = 800.0
-margin_bottom = 600.0
-rect_min_size = Vector2( 800, 100 )
+margin_right = 600.0
+margin_bottom = 100.0
 
 [node name="VBoxContainer" type="HBoxContainer" parent="HBoxContainer"]
-margin_right = 800.0
+margin_right = 600.0
 margin_bottom = 100.0
 rect_min_size = Vector2( 0, 100 )
 alignment = 1

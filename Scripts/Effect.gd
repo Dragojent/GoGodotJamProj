@@ -16,9 +16,13 @@ signal expired(effect)
 func apply(_actor):
 	pass
 
+func end(_actor):
+	pass
+
 # Triggered at the beginning of each turn
-func tick(_actor): 
+func tick(actor): 
 	pass
 	duration -= 1
 	if duration == 0:
+		end(actor)
 		emit_signal("expired", self)

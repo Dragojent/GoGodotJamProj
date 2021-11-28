@@ -1,4 +1,4 @@
-extends Node
+extends Node2D
 
 enum Enemy_type {
     DAMAGE,
@@ -6,7 +6,7 @@ enum Enemy_type {
     HEXER
 }
 
-onready var mana_bar = get_parent().get_node("Stats").get_node("Mana")
+onready var mana_bar = $Stats/Mana
 
 export(int) var max_mana := 100
 export(Enemy_type) var enemy_type

@@ -14,9 +14,12 @@ enum Team{
 	ENEMY
 }
 
+onready var animation_player = $AnimationPlayer
+
 export(Resource) var stats
 export(Team) var team := Team.PARTY
 export(Array, Resource) var actions := []
+export(Array, Texture) var sprites := []
 
 var tapped := false
 var active := false
@@ -27,27 +30,38 @@ signal try_toggle(actor, active)
 signal left_click(actor)
 signal lost_mana(actor, amount)
 signal hovered(actor, entered)
+signal animation_finished()
 
 func _ready():
-	$Click_area.connect("input_event", self, "_on_Click_area_input")
 	$Click_area.connect("mouse_entered", self, "_on_Click_area_mouse_entered")
 	$Click_area.connect("mouse_exited", self, "_on_Click_area_mouse_exited")
+	$Click_area.connect("gui_input", self, "_on_Click_area_input")
+
+	set_sprite(1)
+	animation_player.play("Untap")
+	animation_player.connect("animation_finished", self, "_on_Animation_finished")
 
 	$Sprite.rect_pivot_offset = $Sprite.rect_size / 2
 
+func _on_Animation_finished(anim_name):
+	emit_signal("animation_finished")
+
 func _on_Click_area_mouse_entered():
-	$Sprite.rect_scale = Vector2(1.1, 1.1)
+	$Sprite.material.set_shader_param("active", true)
 	emit_signal("hovered", self, true)
 
 func _on_Click_area_mouse_exited():
-	$Sprite.rect_scale = Vector2(1.0, 1.0)
+	$Sprite.material.set_shader_param("active", false)
 	emit_signal("hovered", self, false)
 
+func set_sprite(sprite_index : int):
+	if sprites[sprite_index] != null:
+		$Sprite.texture = sprites[sprite_index]
+
 # areas shouldn't overlap
-func _on_Click_area_input(_viewport, event, _shape_index):
+func _on_Click_area_input(event):
 	if event is InputEventMouseButton:
 		if event.button_index == BUTTON_RIGHT and event.pressed:
-			# behavior.right_button()
 			if team == Team.PARTY:
 				if active:
 					emit_signal("try_toggle", self, false)
@@ -75,14 +89,12 @@ func set_highlight(state : bool):
 # 			emit_signal("activated", self)
 
 func tap():
+	animation_player.queue("Tap")
 	tapped = true
-	$Sprite.rect_rotation = 20
-	# something
 
 func untap():
+	animation_player.queue("Untap")
 	tapped = false
-	$Sprite.rect_rotation = 0
-	# something
 
 func start_turn():
 	for effect in effects:
@@ -103,7 +115,8 @@ func receive_effect(effect : Effect):
 		effects.append(effect)
 
 func use_mana(source, amount : int):
-	amount -= stats.armor
+	if source is Effect:
+		amount -= stats.armor
 	if amount <= 0:
 		return
 
@@ -113,6 +126,8 @@ func use_mana(source, amount : int):
 		get_node("Enemy_stats").lose_mana(amount)
 
 func use_action(action_index : int, target):
+	animation_player.play("Use_action")
+
 	var power_multiplier = 0.0
 	match attack_roll(action_index, target):
 		MISS:
@@ -127,7 +142,7 @@ func use_action(action_index : int, target):
 	tap()
 
 func _roll() -> int:
-    return rng.randi_range(1, 100)
+	return rng.randi_range(1, 100)
 
 func attack_roll(action_index : int, target : Actor):
 	var hit_score = (stats.accuracy + actions[action_index].accuracy_bonus 
@@ -155,18 +170,18 @@ func can_target(action_index : int, target : Actor) -> bool:
 		return false
 
 func activate():
-	self.active = true
+	if animation_player.is_playing():
+		return
 
-	var new_pos = position + Vector2(100, 0)
-	$Tween.interpolate_property(self, "position", null, new_pos, 0.1)
-	$Tween.start()
+	self.active = true
+	animation_player.play("Activate")
 
 func deactivate():
-	active = false
+	if animation_player.is_playing():
+		return
 
-	var new_pos = position + Vector2(-100, 0)
-	$Tween.interpolate_property(self, "position", null, new_pos, 0.1)
-	$Tween.start()
+	active = false
+	animation_player.play("Deactivate")
 
 func _on_Effect_expired(effect : Effect):
 	effects.erase(effect)
