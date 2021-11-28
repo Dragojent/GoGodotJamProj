@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=2]
+[gd_scene load_steps=54 format=2]
 
 [ext_resource path="res://Scenes/Actor.tscn" type="PackedScene" id=1]
 [ext_resource path="res://Scripts/Battle.gd" type="Script" id=2]
@@ -23,6 +23,22 @@
 [ext_resource path="res://Assets/Chars/Knight_idle.png" type="Texture" id=21]
 [ext_resource path="res://Assets/Chars/Cleric_attack.png" type="Texture" id=22]
 [ext_resource path="res://Assets/Chars/Knight_deactivated.png" type="Texture" id=23]
+[ext_resource path="res://Scenes/Enemy_actor.tscn" type="PackedScene" id=24]
+[ext_resource path="res://Assets/Goblins/Goblin2Idle.png" type="Texture" id=25]
+[ext_resource path="res://Assets/Goblins/Goblin3Attack.png" type="Texture" id=26]
+[ext_resource path="res://Assets/Goblins/Goblin3Idle.png" type="Texture" id=27]
+[ext_resource path="res://Assets/Goblins/Goblin1Idle.png" type="Texture" id=28]
+[ext_resource path="res://Assets/Goblins/Goblin1Attack.png" type="Texture" id=29]
+[ext_resource path="res://Assets/Goblins/Goblin2Attack.png" type="Texture" id=30]
+[ext_resource path="res://Assets/coin.png" type="Texture" id=31]
+[ext_resource path="res://Resources/Actions/A_Taunt.tres" type="Resource" id=32]
+[ext_resource path="res://Resources/Actions/A_Smite.tres" type="Resource" id=33]
+[ext_resource path="res://Resources/Actions/A_Armor.tres" type="Resource" id=34]
+[ext_resource path="res://Assets/Sounds/magic.wav" type="AudioStream" id=35]
+[ext_resource path="res://Assets/Sounds/bow.wav" type="AudioStream" id=36]
+[ext_resource path="res://Assets/Sounds/bell.wav" type="AudioStream" id=37]
+[ext_resource path="res://Assets/Sounds/strike.wav" type="AudioStream" id=38]
+[ext_resource path="res://Assets/Sounds/fancy_magic.wav" type="AudioStream" id=39]
 
 [sub_resource type="Resource" id=2]
 script = ExtResource( 10 )
@@ -44,7 +60,7 @@ accuracy = 100
 script = ExtResource( 10 )
 upkeep = 1
 evasion = 40
-armor = 5
+armor = 0
 power = 15
 accuracy = 100
 
@@ -52,7 +68,7 @@ accuracy = 100
 script = ExtResource( 10 )
 upkeep = 1
 evasion = 10
-armor = 5
+armor = 3
 power = 20
 accuracy = 100
 
@@ -60,6 +76,30 @@ accuracy = 100
 min_value = 0.5
 max_value = 2.0
 _data = [ Vector2( 0, 0.5 ), 0.0, 0.0, 0, 0, Vector2( 0.491429, 1 ), 2.13182, 2.13182, 0, 0, Vector2( 1, 2 ), 0.0, 0.0, 0, 0 ]
+
+[sub_resource type="Resource" id=12]
+script = ExtResource( 10 )
+upkeep = 1
+evasion = 10
+armor = 5
+power = 10
+accuracy = 90
+
+[sub_resource type="Resource" id=13]
+script = ExtResource( 10 )
+upkeep = 1
+evasion = 20
+armor = 0
+power = 10
+accuracy = 120
+
+[sub_resource type="Resource" id=14]
+script = ExtResource( 10 )
+upkeep = 1
+evasion = 30
+armor = 5
+power = 15
+accuracy = 80
 
 [sub_resource type="Resource" id=6]
 script = ExtResource( 10 )
@@ -93,33 +133,222 @@ armor = 5
 power = 30
 accuracy = 90
 
+[sub_resource type="Animation" id=10]
+resource_name = "Combat"
+length = 1.3
+tracks/0/type = "value"
+tracks/0/path = NodePath("GUI/Actor_info_container/Party_actor_info:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.3, 1, 1.3 ),
+"transitions": PoolRealArray( 0.267943, 1, 0.554785, 0.267943 ),
+"update": 0,
+"values": [ Vector2( 12, 11 ), Vector2( -68, -76 ), Vector2( -68, -76 ), Vector2( 12, 11 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("GUI/Actor_info_container/Enemy_actor_info:rect_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.3, 1, 1.3 ),
+"transitions": PoolRealArray( 0.267943, 1, 0.517632, 0.267943 ),
+"update": 0,
+"values": [ Vector2( 764, 18 ), Vector2( 844, -76 ), Vector2( 844, -76 ), Vector2( 764, 18 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("GUI/HBoxContainer/VBoxContainer/Mana/Background/Amount:rect_position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.3, 1, 1.3 ),
+"transitions": PoolRealArray( 0.170755, 1, 0.517632, 1 ),
+"update": 0,
+"values": [ Vector2( -162, 11 ), Vector2( -162, -108 ), Vector2( -162, -108 ), Vector2( -162, 11 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("GUI/HBoxContainer/VBoxContainer/HBoxContainer/1:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("GUI/HBoxContainer/VBoxContainer/HBoxContainer/1:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 1, 1.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("GUI/HBoxContainer/VBoxContainer/HBoxContainer/2:visible")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("GUI/HBoxContainer/VBoxContainer/HBoxContainer/2:modulate")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 1, 1.3 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=11]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/path = NodePath("GUI/Actor_info_container/Party_actor_info:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 12, 11 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("GUI/Actor_info_container/Enemy_actor_info:rect_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 764, 18 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("GUI/HBoxContainer/VBoxContainer/Mana/Background/Amount:rect_position")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( -162, 11 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("GUI/Action_list_container/Action_list:rect_position")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Vector2( 172, 444 ) ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("GUI/HBoxContainer/VBoxContainer/HBoxContainer/1:visible")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ true ]
+}
+tracks/5/type = "value"
+tracks/5/path = NodePath("GUI/HBoxContainer/VBoxContainer/HBoxContainer/1:modulate")
+tracks/5/interp = 1
+tracks/5/loop_wrap = true
+tracks/5/imported = false
+tracks/5/enabled = true
+tracks/5/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+tracks/6/type = "value"
+tracks/6/path = NodePath("GUI/HBoxContainer/VBoxContainer/HBoxContainer/2:visible")
+tracks/6/interp = 1
+tracks/6/loop_wrap = true
+tracks/6/imported = false
+tracks/6/enabled = true
+tracks/6/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ true ]
+}
+tracks/7/type = "value"
+tracks/7/path = NodePath("GUI/HBoxContainer/VBoxContainer/HBoxContainer/2:modulate")
+tracks/7/interp = 1
+tracks/7/loop_wrap = true
+tracks/7/imported = false
+tracks/7/enabled = true
+tracks/7/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 1 ) ]
+}
+
 [node name="Battle" type="Node2D"]
 script = ExtResource( 2 )
 
 [node name="GUI" type="MarginContainer" parent="."]
 margin_left = 20.0
 margin_top = 20.0
-margin_right = 1909.0
-margin_bottom = 1079.0
+margin_right = 1008.0
+margin_bottom = 556.0
 mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
 }
 
 [node name="HBoxContainer" type="HBoxContainer" parent="GUI"]
-margin_right = 1889.0
-margin_bottom = 1059.0
+margin_right = 988.0
+margin_bottom = 536.0
 mouse_filter = 2
+alignment = 1
 
 [node name="VBoxContainer" type="VBoxContainer" parent="GUI/HBoxContainer"]
-margin_right = 64.0
-margin_bottom = 1059.0
+margin_left = 462.0
+margin_right = 526.0
+margin_bottom = 536.0
 mouse_filter = 2
 
 [node name="Mana" type="MarginContainer" parent="GUI/HBoxContainer/VBoxContainer"]
 margin_right = 64.0
-margin_bottom = 20.0
-rect_min_size = Vector2( 64, 20 )
+margin_bottom = 80.0
+rect_min_size = Vector2( 64, 80 )
 mouse_filter = 2
 __meta__ = {
 "_edit_use_anchors_": false
@@ -127,15 +356,15 @@ __meta__ = {
 
 [node name="Background" type="NinePatchRect" parent="GUI/HBoxContainer/VBoxContainer/Mana"]
 margin_right = 64.0
-margin_bottom = 20.0
+margin_bottom = 80.0
 
 [node name="Amount" type="TextureProgress" parent="GUI/HBoxContainer/VBoxContainer/Mana/Background"]
 anchor_left = 0.5
 anchor_right = 0.5
-margin_left = 268.0
-margin_top = 20.0
-margin_right = 652.0
-margin_bottom = 72.0
+margin_left = -194.0
+margin_top = 11.0
+margin_right = 190.0
+margin_bottom = 63.0
 mouse_filter = 2
 size_flags_horizontal = 15
 size_flags_vertical = 15
@@ -146,9 +375,39 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="HBoxContainer" type="HBoxContainer" parent="GUI/HBoxContainer/VBoxContainer"]
+margin_top = 84.0
+margin_right = 64.0
+margin_bottom = 114.0
+mouse_filter = 2
+
+[node name="1" type="MarginContainer" parent="GUI/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_right = 30.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 30, 30 )
+mouse_filter = 2
+size_flags_horizontal = 0
+
+[node name="Icon" type="NinePatchRect" parent="GUI/HBoxContainer/VBoxContainer/HBoxContainer/1"]
+margin_right = 30.0
+margin_bottom = 30.0
+texture = ExtResource( 31 )
+
+[node name="2" type="MarginContainer" parent="GUI/HBoxContainer/VBoxContainer/HBoxContainer"]
+margin_left = 34.0
+margin_right = 64.0
+margin_bottom = 30.0
+rect_min_size = Vector2( 30, 30 )
+mouse_filter = 2
+
+[node name="Icon" type="NinePatchRect" parent="GUI/HBoxContainer/VBoxContainer/HBoxContainer/2"]
+margin_right = 30.0
+margin_bottom = 30.0
+texture = ExtResource( 31 )
+
 [node name="Action_list_container" type="NinePatchRect" parent="GUI"]
-margin_right = 1889.0
-margin_bottom = 1059.0
+margin_right = 988.0
+margin_bottom = 536.0
 
 [node name="Action_list" parent="GUI/Action_list_container" instance=ExtResource( 3 )]
 anchor_right = 0.0
@@ -159,8 +418,8 @@ margin_right = 812.0
 margin_bottom = 544.0
 
 [node name="Actor_info_container" type="NinePatchRect" parent="GUI"]
-margin_right = 1889.0
-margin_bottom = 1059.0
+margin_right = 988.0
+margin_bottom = 536.0
 
 [node name="Party_actor_info" parent="GUI/Actor_info_container" instance=ExtResource( 11 )]
 anchor_right = 0.0
@@ -180,37 +439,39 @@ margin_bottom = 226.0
 
 [node name="Actors" type="YSort" parent="."]
 
-[node name="Party_combat_position" type="Node2D" parent="Actors"]
-position = Vector2( 832, 512 )
-
-[node name="Enemy_combat_position" type="Node2D" parent="Actors"]
-position = Vector2( 1088, 512 )
-
 [node name="Party" type="YSort" parent="Actors"]
 
 [node name="Knight" parent="Actors/Party" instance=ExtResource( 1 )]
-position = Vector2( 288, 68 )
+position = Vector2( 288, 48 )
 stats = SubResource( 2 )
-actions = [ ExtResource( 6 ), ExtResource( 7 ) ]
+actions = [ ExtResource( 32 ), ExtResource( 6 ) ]
 sprites = [ ExtResource( 21 ), ExtResource( 23 ), ExtResource( 15 ) ]
+attack_priority = 1
+attack_sound = ExtResource( 38 )
 
 [node name="Cleric" parent="Actors/Party" instance=ExtResource( 1 )]
-position = Vector2( 192, 128 )
+position = Vector2( 200, 108 )
 stats = SubResource( 3 )
-actions = [ ExtResource( 6 ) ]
+actions = [ ExtResource( 33 ), ExtResource( 34 ) ]
 sprites = [ ExtResource( 19 ), ExtResource( 20 ), ExtResource( 22 ) ]
+attack_priority = 4
+attack_sound = ExtResource( 37 )
 
 [node name="Archer" parent="Actors/Party" instance=ExtResource( 1 )]
-position = Vector2( 96, 192 )
+position = Vector2( 112, 172 )
 stats = SubResource( 5 )
 actions = [ ExtResource( 7 ) ]
 sprites = [ ExtResource( 17 ), ExtResource( 16 ), ExtResource( 18 ) ]
+attack_priority = 2
+attack_sound = ExtResource( 36 )
 
 [node name="Wizard" parent="Actors/Party" instance=ExtResource( 1 )]
-position = Vector2( 0, 256 )
+position = Vector2( 24, 236 )
 stats = SubResource( 4 )
 actions = [ ExtResource( 6 ) ]
 sprites = [ ExtResource( 12 ), ExtResource( 14 ), ExtResource( 13 ) ]
+attack_priority = 3
+attack_sound = ExtResource( 35 )
 
 [node name="Enemy_AI" type="Node" parent="Actors"]
 script = ExtResource( 8 )
@@ -218,44 +479,72 @@ evasion_curve = SubResource( 1 )
 
 [node name="Enemies" type="YSort" parent="Actors"]
 
-[node name="Actor" parent="Actors/Enemies" instance=ExtResource( 1 )]
-position = Vector2( 544, 68 )
+[node name="Mage" parent="Actors/Enemies" instance=ExtResource( 24 )]
+position = Vector2( 496, 31 )
+stats = SubResource( 12 )
+actions = [ ExtResource( 6 ) ]
+sprites = [ ExtResource( 27 ), null, ExtResource( 26 ) ]
+attack_sound = ExtResource( 35 )
+
+[node name="Priest" parent="Actors/Enemies" instance=ExtResource( 24 )]
+position = Vector2( 584, 92 )
+stats = SubResource( 13 )
+actions = [ ExtResource( 6 ) ]
+sprites = [ ExtResource( 28 ), null, ExtResource( 29 ) ]
+attack_sound = ExtResource( 39 )
+
+[node name="Warrior" parent="Actors/Enemies" instance=ExtResource( 24 )]
+position = Vector2( 672, 153 )
+stats = SubResource( 14 )
+actions = [ ExtResource( 6 ) ]
+sprites = [ ExtResource( 25 ), null, ExtResource( 30 ) ]
+attack_sound = ExtResource( 38 )
+
+[node name="EnemiesOLD" type="YSort" parent="Actors"]
+visible = false
+
+[node name="Actor" parent="Actors/EnemiesOLD" instance=ExtResource( 1 )]
+position = Vector2( 544, 48 )
 stats = SubResource( 6 )
 team = 1
 actions = [ ExtResource( 6 ) ]
 sprites = [ null, null, null ]
 
-[node name="Enemy_stats" parent="Actors/Enemies/Actor" instance=ExtResource( 9 )]
+[node name="Enemy_stats" parent="Actors/EnemiesOLD/Actor" instance=ExtResource( 9 )]
 
-[node name="Actor2" parent="Actors/Enemies" instance=ExtResource( 1 )]
-position = Vector2( 640, 128 )
+[node name="Actor2" parent="Actors/EnemiesOLD" instance=ExtResource( 1 )]
+position = Vector2( 640, 108 )
 stats = SubResource( 7 )
 team = 1
 actions = [ ExtResource( 6 ) ]
 sprites = [ null, null, null ]
 
-[node name="Enemy_stats" parent="Actors/Enemies/Actor2" instance=ExtResource( 9 )]
+[node name="Enemy_stats" parent="Actors/EnemiesOLD/Actor2" instance=ExtResource( 9 )]
 
-[node name="Actor3" parent="Actors/Enemies" instance=ExtResource( 1 )]
-position = Vector2( 736, 192 )
+[node name="Actor3" parent="Actors/EnemiesOLD" instance=ExtResource( 1 )]
+position = Vector2( 736, 172 )
 stats = SubResource( 8 )
 team = 1
 actions = [ ExtResource( 6 ) ]
 sprites = [ null, null, null ]
 
-[node name="Enemy_stats" parent="Actors/Enemies/Actor3" instance=ExtResource( 9 )]
+[node name="Enemy_stats" parent="Actors/EnemiesOLD/Actor3" instance=ExtResource( 9 )]
 
-[node name="Actor4" parent="Actors/Enemies" instance=ExtResource( 1 )]
-position = Vector2( 832, 256 )
+[node name="Actor4" parent="Actors/EnemiesOLD" instance=ExtResource( 1 )]
+position = Vector2( 832, 236 )
 stats = SubResource( 9 )
 team = 1
 actions = [ ExtResource( 6 ) ]
 sprites = [ null, null, null ]
 
-[node name="Enemy_stats" parent="Actors/Enemies/Actor4" instance=ExtResource( 9 )]
+[node name="Enemy_stats" parent="Actors/EnemiesOLD/Actor4" instance=ExtResource( 9 )]
 
 [node name="Camera2D" type="Camera2D" parent="."]
-offset = Vector2( 512, 288 )
+position = Vector2( 512, 288 )
 current = true
 
 [node name="Tween" type="Tween" parent="Camera2D"]
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="."]
+anims/Combat = SubResource( 10 )
+anims/RESET = SubResource( 11 )

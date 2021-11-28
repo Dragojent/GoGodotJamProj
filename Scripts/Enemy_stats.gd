@@ -24,11 +24,14 @@ func set_max_mana(value : int):
 
 func set_mana(value : int):
     mana = value
+    $Stats/Follow.value = value
     mana_bar.value = mana
 
 func lose_mana(amount : int):
     mana -= amount
     mana_bar.value = mana
+    $Tween.interpolate_property($Stats/Follow, "value", null, mana, 0.5)
+    $Tween.start()
     if mana <= 0:
         die()
 

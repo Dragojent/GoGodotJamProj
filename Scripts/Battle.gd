@@ -15,6 +15,7 @@ onready var action_list = $GUI/Action_list_container/Action_list
 onready var mana_pool = $GUI/HBoxContainer/VBoxContainer/Mana/Background/Amount
 onready var actor_info = $GUI/Actor_info_container
 onready var camera = $Camera2D
+onready var char_points = $GUI/HBoxContainer/VBoxContainer/HBoxContainer
 
 export(int) var max_mana := 100
 var mana : int
@@ -27,7 +28,10 @@ var target = null
 var targeting := false
 var active : Array
 
+var animating := false
+
 func _ready():
+	rng.randomize()
 	randomize()
 	set_mana(max_mana)
 
@@ -42,28 +46,62 @@ func _ready():
 		actor.connect("lost_mana", self, "_on_Actor_lost_mana")
 		actor.connect("hovered", self, "_on_Actor_hovered")
 
-func animate_combat(party_actor : Actor, enemy_actor : Actor):
-	# make this an animation
-	camera.get_node("Tween").interpolate_property(camera, "zoom", null, Vector2(0.5, 0.5), 0.05)
+# Holy shit this is a mess
+func animate_combat(attacker : Actor, victim : Actor):
+	# attacker.untap()
+	# victim.untap()
+	$AnimationPlayer.play("Combat")
+
+	animating = true
+	for actor in party_actors:
+		actor.get_node("Sprite").material.set_shader_param("active", false)
+		actor.animating = true
+		if actor != attacker and actor != victim:
+			actor.get_node("AnimationPlayer").play("Move_back")
+	for actor in enemy_actors:
+		actor.get_node("Sprite").material.set_shader_param("active", false)
+		actor.animating = true
+		if actor != attacker and actor != victim:
+			actor.get_node("AnimationPlayer").play("Move_eback")
+
+	# actor_info.get_node("Party_actor_info").rect_position -= Vector2(300, 0)
+	# actor_info.get_node("Enemy_actor_info").rect_position += Vector2(300, 0)
+
+	if victim.team == Actor.Team.PARTY:
+		victim.get_node("AnimationPlayer").play("Move_forward")
+	else:
+		victim.get_node("AnimationPlayer").play("Move_eforward")
+	camera.get_node("Tween").interpolate_property(camera, "offset", null, Vector2(0, 30), 0.1)
 	camera.get_node("Tween").start()
-
-	party_actor.get_node("Sprite").rect_scale = Vector2.ONE * 3
-	enemy_actor.get_node("Sprite").rect_scale = Vector2.ONE * 3
-
-	party_actor.get_node("Tween").interpolate_property(party_actor, "position", null, $Actors/Party_combat_position.position, 0.1)
-	enemy_actor.get_node("Tween").interpolate_property(enemy_actor, "position", null, $Actors/Enemy_combat_position.position, 0.1)
+	camera.get_node("Tween").interpolate_property(camera, "zoom", null, Vector2(0.95, 0.95), 0.1)
+	camera.get_node("Tween").start()
 
 	yield(get_tree().create_timer(1), "timeout")
 
-	party_actor.get_node("Sprite").rect_scale = Vector2.ONE
-	enemy_actor.get_node("Sprite").rect_scale = Vector2.ONE
-
 	camera.get_node("Tween").interpolate_property(camera, "zoom", null, Vector2(1, 1), 0.1)
 	camera.get_node("Tween").start()
+	camera.get_node("Tween").interpolate_property(camera, "offset", null, Vector2(0, 0), 0.1)
+	camera.get_node("Tween").start()
+	if victim.team == Actor.Team.PARTY:
+		victim.get_node("AnimationPlayer").play("Move_freturn")
+	else:
+		victim.get_node("AnimationPlayer").play("Move_efreturn")
+
+	# actor_info.get_node("Party_actor_info").rect_position += Vector2(300, 0)
+	# actor_info.get_node("Enemy_actor_info").rect_position -= Vector2(300, 0)
+
+	for actor in party_actors:
+		actor.animating = false
+		if actor != attacker and actor != victim:
+			actor.get_node("AnimationPlayer").play("Move_breturn")
+	for actor in enemy_actors:
+		actor.animating = false
+		if actor != attacker and actor != victim:
+			actor.get_node("AnimationPlayer").play("Move_ebreturn")
+	animating = false
 
 func end_turn():
 	current_turn = wrapi(current_turn + 1, 0, 2)
-	animate_combat(party_actors[0], enemy_actors[3])
 
 	reset_selections()
 
@@ -126,10 +164,23 @@ func set_mana(amount : int):
 	mana_pool.value = mana
 
 func _unhandled_input(event : InputEvent):
+	if event is InputEventMouseButton:
+		if event.button_index == BUTTON_RIGHT and event.pressed:
+			reset_selections()
+
 	if event.is_action_pressed("end_turn"):
 		end_turn()
 
 func _on_Actor_try_toggle(actor : Actor, activate : bool):
+	if targeting:
+		reset_selections()
+		return
+
+	reset_selections()
+
+	if animating:
+		return
+
 	if current_turn != 0:
 		print("Enemy's turn")
 		return 
@@ -142,27 +193,37 @@ func _on_Actor_try_toggle(actor : Actor, activate : bool):
 		print("2 actors already active")
 		return
 
-	if targeting:
-		reset_selections()
-		return
-
 	if activate:
 		actor.activate()
 		yield(actor, "animation_finished")
 		active.append(actor)
+		if active.size() == 2:
+			char_points.get_node("1").get_node("Icon").hide()
+		elif active.size() == 1:
+			char_points.get_node("2").get_node("Icon").hide()
 	else:
 		actor.deactivate()
 		yield(actor, "animation_finished")
 		active.erase(actor)
+		if active.size() == 1:
+			char_points.get_node("1").get_node("Icon").show()
+		elif active.size() == 0:
+			char_points.get_node("2").get_node("Icon").show()
 
-func _on_Actor_hovered(actor: Actor, hovered : bool):
-	if hovered:
+func _on_Actor_hovered(actor: Actor, p_hovered : bool):
+	if animating:
+		return
+
+	if p_hovered:
 		if actor.team == Actor.Team.PARTY:
 			actor_info.get_node("Party_actor_info").display_actor_info(actor)
 		if actor.team == Actor.Team.ENEMY:
 			actor_info.get_node("Enemy_actor_info").display_actor_info(actor)
 
 func _on_Actor_left_click(actor: Actor):
+	if animating:
+		return
+
 	if !actor.tapped and actor.active and !targeting:
 		set_selected(actor)
 		action_list.display_actions(actor)
@@ -174,7 +235,7 @@ func _on_Actor_left_click(actor: Actor):
 			pass
 		elif selected_action != null:
 			if actor_can_target(selected, selected_action, target):
-				selected_use_action()
+				actor_use_action(selected, selected_action, target)
 			else:
 				set_target(null)
 
@@ -186,14 +247,18 @@ func actor_can_target(actor, action_index, p_target):
 
 func _on_Action_chosen(index : int):
 	set_selected_action(index)
+	if selected.actions[index].can_target.size() == 0:
+		actor_use_action(selected, selected_action, selected)
 	if target != null:
 		if actor_can_target(selected, selected_action, target):
-			selected_use_action()
+			actor_use_action(selected, selected_action, target)
 		else:
 			set_target(null)
 
-func selected_use_action():
-	selected.use_action(selected_action, target)
+func actor_use_action(actor : Actor, action_index : int, p_target : Actor):
+	animate_combat(actor, p_target)
+	# yield(get_tree().create_timer(0.05), "timeout")
+	actor.use_action(action_index, p_target)
 	reset_selections()
 
 func reset_selections():

@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://Resources/Effects/E_Armor.tres" type="Resource" id=1]
+[ext_resource path="res://Scripts/Action.gd" type="Script" id=2]
+
+[resource]
+script = ExtResource( 2 )
+name = "Holy Armor"
+overview = "Protect your allies with divine shield"
+can_target = [ 0 ]
+mana_cost = 5
+power = 1.0
+accuracy_bonus = 100
+effects = [ ExtResource( 1 ) ]
+self_effects = [  ]

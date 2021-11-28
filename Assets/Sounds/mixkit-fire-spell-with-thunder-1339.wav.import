@@ -1,0 +1,21 @@
+[remap]
+
+importer="wav"
+type="AudioStreamSample"
+path="res://.import/mixkit-fire-spell-with-thunder-1339.wav-a3e3242ebd17bc11976ce9f74ba3936a.sample"
+
+[deps]
+
+source_file="res://Assets/Sounds/mixkit-fire-spell-with-thunder-1339.wav"
+dest_files=[ "res://.import/mixkit-fire-spell-with-thunder-1339.wav-a3e3242ebd17bc11976ce9f74ba3936a.sample" ]
+
+[params]
+
+force/8_bit=false
+force/mono=false
+force/max_rate=false
+force/max_rate_hz=44100
+edit/trim=false
+edit/normalize=false
+edit/loop=false
+compress/mode=0

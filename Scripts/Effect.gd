@@ -21,8 +21,8 @@ func end(_actor):
 
 # Triggered at the beginning of each turn
 func tick(actor): 
-	pass
 	duration -= 1
+	print(name + str(duration))
 	if duration == 0:
 		end(actor)
 		emit_signal("expired", self)

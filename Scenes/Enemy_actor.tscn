@@ -1,0 +1,280 @@
+[gd_scene load_steps=11 format=2]
+
+[ext_resource path="res://Scenes/Enemy_stats.tscn" type="PackedScene" id=1]
+[ext_resource path="res://Scenes/Actor.tscn" type="PackedScene" id=2]
+[ext_resource path="res://Assets/Goblins/Goblin3Idle.png" type="Texture" id=3]
+
+[sub_resource type="Shader" id=1]
+code = "shader_type canvas_item;
+
+uniform vec4 line_color : hint_color = vec4(1);
+uniform float line_thickness : hint_range(0, 10) = 1.0;
+uniform bool active = false;
+
+void fragment() {
+	if (!active) {
+		COLOR = texture(TEXTURE, UV);
+	}
+	else {
+		vec4 color = texture(TEXTURE, UV);
+		
+    	vec2 size = TEXTURE_PIXEL_SIZE * line_thickness;
+		float outline = texture(TEXTURE, UV + vec2(-size.x, 0)).a;
+		outline += texture(TEXTURE, UV + vec2(0, size.y)).a;
+		outline += texture(TEXTURE, UV + vec2(size.x, 0)).a;
+		outline += texture(TEXTURE, UV + vec2(0, -size.y)).a;
+		outline += texture(TEXTURE, UV + vec2(-size.x, size.y)).a;
+		outline += texture(TEXTURE, UV + vec2(size.x, size.y)).a;
+		outline += texture(TEXTURE, UV + vec2(-size.x, -size.y)).a;
+		outline += texture(TEXTURE, UV + vec2(size.x, -size.y)).a;
+		outline = min(outline, 1.0);
+
+
+		COLOR = mix(color, line_color, outline - color.a);
+	}
+}"
+
+[sub_resource type="ShaderMaterial" id=2]
+resource_local_to_scene = true
+shader = SubResource( 1 )
+shader_param/line_color = Color( 0.768627, 0.882353, 0.737255, 1 )
+shader_param/line_thickness = 10.0
+shader_param/active = false
+
+[sub_resource type="Animation" id=14]
+resource_name = "EUse_action"
+length = 1.5
+tracks/0/type = "method"
+tracks/0/path = NodePath(".")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 1 ),
+"transitions": PoolRealArray( 1, 1 ),
+"values": [ {
+"args": [ 2 ],
+"method": "set_sprite"
+}, {
+"args": [ 0 ],
+"method": "set_sprite"
+} ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:rect_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 1, 1.1 ),
+"transitions": PoolRealArray( 0.170755, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 20, 0 ), Vector2( 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Sprite:rect_scale")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0, 0.1, 1, 1.1 ),
+"transitions": PoolRealArray( 0.148651, 1, 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.5, 1.5 ), Vector2( 1.5, 1.5 ), Vector2( 1, 1 ) ]
+}
+tracks/3/type = "value"
+tracks/3/path = NodePath("Enemy_stats:visible")
+tracks/3/interp = 1
+tracks/3/loop_wrap = true
+tracks/3/imported = false
+tracks/3/enabled = true
+tracks/3/keys = {
+"times": PoolRealArray( 0, 1.4 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 1,
+"values": [ false, true ]
+}
+tracks/4/type = "value"
+tracks/4/path = NodePath("Enemy_stats:modulate")
+tracks/4/interp = 1
+tracks/4/loop_wrap = true
+tracks/4/imported = false
+tracks/4/enabled = true
+tracks/4/keys = {
+"times": PoolRealArray( 1.4, 1.5 ),
+"transitions": PoolRealArray( 0.80194, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=3]
+resource_name = "Move_eback"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.277392, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( 150, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Enemy_stats:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=5]
+resource_name = "Move_ebreturn"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.31864, 1 ),
+"update": 0,
+"values": [ Vector2( 150, 0 ), Vector2( 0, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Enemy_stats:visible")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0.4 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Enemy_stats:modulate")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.4, 0.5 ),
+"transitions": PoolRealArray( 1.54925, 1 ),
+"update": 0,
+"values": [ Color( 1, 1, 1, 0 ), Color( 1, 1, 1, 1 ) ]
+}
+
+[sub_resource type="Animation" id=4]
+resource_name = "Move_eforward"
+length = 0.2
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:rect_position")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.329877, 1 ),
+"update": 0,
+"values": [ Vector2( 0, 0 ), Vector2( -20, 0 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:rect_scale")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 0.101532, 1 ),
+"update": 0,
+"values": [ Vector2( 1, 1 ), Vector2( 1.5, 1.5 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Enemy_stats:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ false ]
+}
+
+[sub_resource type="Animation" id=6]
+resource_name = "Move_efreturn"
+length = 0.5
+tracks/0/type = "value"
+tracks/0/path = NodePath("Sprite:rect_scale")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( 1.5, 1.5 ), Vector2( 1, 1 ) ]
+}
+tracks/1/type = "value"
+tracks/1/path = NodePath("Sprite:rect_position")
+tracks/1/interp = 1
+tracks/1/loop_wrap = true
+tracks/1/imported = false
+tracks/1/enabled = true
+tracks/1/keys = {
+"times": PoolRealArray( 0, 0.2 ),
+"transitions": PoolRealArray( 1, 1 ),
+"update": 0,
+"values": [ Vector2( -30, 0 ), Vector2( 0, 0 ) ]
+}
+tracks/2/type = "value"
+tracks/2/path = NodePath("Enemy_stats:visible")
+tracks/2/interp = 1
+tracks/2/loop_wrap = true
+tracks/2/imported = false
+tracks/2/enabled = true
+tracks/2/keys = {
+"times": PoolRealArray( 0.5 ),
+"transitions": PoolRealArray( 1 ),
+"update": 1,
+"values": [ true ]
+}
+
+[node name="Actor" instance=ExtResource( 2 )]
+team = 1
+sprites = [ null, null, null ]
+
+[node name="Sprite" parent="." index="2"]
+material = SubResource( 2 )
+texture = ExtResource( 3 )
+
+[node name="AnimationPlayer" parent="." index="4"]
+anims/EUse_action = SubResource( 14 )
+anims/Move_eback = SubResource( 3 )
+anims/Move_ebreturn = SubResource( 5 )
+anims/Move_eforward = SubResource( 4 )
+anims/Move_efreturn = SubResource( 6 )
+
+[node name="Enemy_stats" parent="." index="6" instance=ExtResource( 1 )]
+position = Vector2( 64, 216 )
+
+[node name="Damage_number" parent="." index="7"]
+position = Vector2( -120, 152 )

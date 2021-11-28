@@ -17,7 +17,9 @@ func start_turn(party_actors, enemy_actors):
 			print("No action selected")
 			continue
 
-		actor.use_action(action, target)
+		# actor.use_action(action, target)
+		get_parent().get_parent().actor_use_action(actor, action, target)
+		yield(get_tree().create_timer(1.5), "timeout")
 	get_parent().get_parent().end_turn()
 
 
@@ -28,15 +30,20 @@ func will_survive_action(actor, action_index):
 		return true
 
 func choose_target(actor, party_actors, enemy_actors):
-	var max_target_desirability = -100000
+	var max_target_desirability = -100
 	var target = null
 	match actor.get_node("Enemy_stats").enemy_type:
 		DAMAGE:
+			# for i_actor in party_actors:
+			# 	var i_stats = i_actor.stats
+			# 	var desirability = ((i_stats.power
+			# 						- i_stats.armor)
+			# 						/ evasion_curve.interpolate(i_stats.evasion / 100.0))
+			# 	if desirability > max_target_desirability:
+			# 		target = i_actor
+			# 		max_target_desirability = desirability
 			for i_actor in party_actors:
-				var i_stats = i_actor.stats
-				var desirability = ((i_stats.power
-									- i_stats.armor)
-									/ evasion_curve.interpolate(i_stats.evasion / 100.0))
+				var desirability = i_actor.attack_priority
 				if desirability > max_target_desirability:
 					target = i_actor
 					max_target_desirability = desirability
@@ -50,11 +57,10 @@ func choose_target(actor, party_actors, enemy_actors):
 					target = i_actor
 					max_target_desirability = desirability
 		HEXER:
+			var target_desirability = 100
 			for i_actor in party_actors:
-				var i_stats = i_actor.stats
-				var desirability = (i_stats.power
-									/ evasion_curve.interpolate(i_stats.evasion / 100.0))
-				if desirability > max_target_desirability:
+				var desirability = i_actor.attack_priority
+				if desirability < target_desirability:
 					target = i_actor
 					max_target_desirability = desirability
 	return target

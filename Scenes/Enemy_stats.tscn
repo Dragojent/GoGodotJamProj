@@ -18,14 +18,33 @@ __meta__ = {
 "_edit_use_anchors_": false
 }
 
+[node name="Follow" type="TextureProgress" parent="Stats"]
+modulate = Color( 1, 0.286275, 0, 1 )
+margin_right = 128.0
+margin_bottom = 20.0
+mouse_filter = 2
+size_flags_horizontal = 15
+size_flags_vertical = 15
+value = 50.0
+texture_under = ExtResource( 3 )
+texture_progress = ExtResource( 2 )
+fill_mode = 1
+nine_patch_stretch = true
+__meta__ = {
+"_edit_use_anchors_": false
+}
+
 [node name="Mana" type="TextureProgress" parent="Stats"]
 margin_right = 128.0
 margin_bottom = 20.0
 size_flags_horizontal = 15
 size_flags_vertical = 15
-texture_under = ExtResource( 3 )
+value = 60.0
 texture_progress = ExtResource( 2 )
+fill_mode = 1
 nine_patch_stretch = true
 __meta__ = {
 "_edit_use_anchors_": false
 }
+
+[node name="Tween" type="Tween" parent="."]

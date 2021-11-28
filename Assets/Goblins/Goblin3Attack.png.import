@@ -2,15 +2,15 @@
 
 importer="texture"
 type="StreamTexture"
-path="res://.import/Illustration2.png-856711bfa87341e9f6f7a5677bf77d00.stex"
+path="res://.import/Goblin3Attack.png-c393e78b7661b8fbe9799b135baf4bdf.stex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://Assets/Illustration2.png"
-dest_files=[ "res://.import/Illustration2.png-856711bfa87341e9f6f7a5677bf77d00.stex" ]
+source_file="res://Assets/Goblins/Goblin3Attack.png"
+dest_files=[ "res://.import/Goblin3Attack.png-c393e78b7661b8fbe9799b135baf4bdf.stex" ]
 
 [params]
 

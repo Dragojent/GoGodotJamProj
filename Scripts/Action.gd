@@ -15,6 +15,7 @@ export(Array, Resource) var effects := []
 export(Array, Resource) var self_effects := []
 
 func execute(actor, target, power_multiplier := 1.0):
+	rng.randomize()
 	if mana_cost > 0:
 		actor.use_mana(self, mana_cost)
 

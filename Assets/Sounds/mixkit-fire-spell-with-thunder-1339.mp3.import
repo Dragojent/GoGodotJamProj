@@ -1,0 +1,15 @@
+[remap]
+
+importer="mp3"
+type="AudioStreamMP3"
+path="res://.import/mixkit-fire-spell-with-thunder-1339.mp3-66dd13d2d2827a9ab9c9a8630bab966f.mp3str"
+
+[deps]
+
+source_file="res://Assets/Sounds/mixkit-fire-spell-with-thunder-1339.mp3"
+dest_files=[ "res://.import/mixkit-fire-spell-with-thunder-1339.mp3-66dd13d2d2827a9ab9c9a8630bab966f.mp3str" ]
+
+[params]
+
+loop=true
+loop_offset=0
