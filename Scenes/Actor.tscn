@@ -462,4 +462,10 @@ __meta__ = {
 [node name="Damage_number" parent="." instance=ExtResource( 4 )]
 position = Vector2( 160, 104 )
 
+[node name="Damage_number2" parent="." instance=ExtResource( 4 )]
+position = Vector2( 185, 135 )
+
+[node name="Damage_number3" parent="." instance=ExtResource( 4 )]
+position = Vector2( 217, 166 )
+
 [node name="AudioPlayer" type="AudioStreamPlayer" parent="."]

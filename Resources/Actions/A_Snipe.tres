@@ -5,11 +5,11 @@
 
 [resource]
 script = ExtResource( 1 )
-name = "Strong slash"
-overview = "Deals a lot of damage"
+name = "Snipe"
+overview = "Take your time and make a precise shot"
 can_target = [ 1 ]
 mana_cost = 7
 power = 1.5
-accuracy_bonus = 5
+accuracy_bonus = 20
 effects = [ ExtResource( 2 ) ]
 self_effects = [  ]

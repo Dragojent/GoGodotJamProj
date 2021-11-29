@@ -10,12 +10,18 @@ export(Curve) var evasion_curve
 
 func start_turn(party_actors, enemy_actors):
 	for actor in enemy_actors:
-		var target = choose_target(actor, party_actors, enemy_actors)
-		var action = choose_action(actor, target)
+		# var target = choose_target(actor, party_actors, enemy_actors)
+		# var action = choose_action(actor, target)
 
-		if action == null:
-			print("No action selected")
-			continue
+
+		# if action == null:
+		# 	print("No action selected")
+		# 	continue
+		var action = wrapi(actor.get_node("Enemy_stats").last_action + 1, 0, actor.actions.size())
+		actor.get_node("Enemy_stats").last_action = action
+		print(action)
+		var target = find_target(actor, action, enemy_actors, party_actors)
+
 
 		# actor.use_action(action, target)
 		get_parent().get_parent().actor_use_action(actor, action, target)
@@ -29,19 +35,32 @@ func will_survive_action(actor, action_index):
 	else:
 		return true
 
+func find_target(actor, action_index, enemy_actors, party_actors):
+	var target = null
+	var max_target_desirability = -100
+	if actor.actions[action_index].can_target.has(Actor.Team.PARTY):
+		for i_actor in enemy_actors:
+			i_actor.attack_priority += 1
+			var desirability = i_actor.attack_priority
+			if desirability > max_target_desirability:
+				target = i_actor
+				max_target_desirability = desirability
+		target.attack_priority -= 2
+	else:
+		for i_actor in party_actors:
+			var desirability = i_actor.attack_priority
+			if desirability > max_target_desirability:
+				target = i_actor
+				max_target_desirability = desirability
+	return target
+
+
+
 func choose_target(actor, party_actors, enemy_actors):
 	var max_target_desirability = -100
 	var target = null
 	match actor.get_node("Enemy_stats").enemy_type:
 		DAMAGE:
-			# for i_actor in party_actors:
-			# 	var i_stats = i_actor.stats
-			# 	var desirability = ((i_stats.power
-			# 						- i_stats.armor)
-			# 						/ evasion_curve.interpolate(i_stats.evasion / 100.0))
-			# 	if desirability > max_target_desirability:
-			# 		target = i_actor
-			# 		max_target_desirability = desirability
 			for i_actor in party_actors:
 				var desirability = i_actor.attack_priority
 				if desirability > max_target_desirability:

@@ -1,0 +1,14 @@
+[gd_resource type="Resource" load_steps=2 format=2]
+
+[ext_resource path="res://Scripts/Action.gd" type="Script" id=1]
+
+[resource]
+script = ExtResource( 1 )
+name = "Weakness"
+overview = "Enfeeble your enemies"
+can_target = [ 1 ]
+mana_cost = 5
+power = 1.0
+accuracy_bonus = 50
+effects = [  ]
+self_effects = [  ]

@@ -101,6 +101,14 @@ func animate_combat(attacker : Actor, victim : Actor):
 	animating = false
 
 func end_turn():
+	var active_actors = []
+	for actor in party_actors:
+		if actor.active:
+			active_actors.append(actor)
+	if active_actors.size() < 2:
+		print("No active actors")
+		return
+
 	current_turn = wrapi(current_turn + 1, 0, 2)
 
 	reset_selections()
@@ -114,16 +122,18 @@ func end_turn():
 		for actor in party_actors:
 			actor.end_turn()
 		for actor in enemy_actors:
-			actor.start_turn()
+			for effect in actor.effects:
+				print(effect.name)
+				if effect.name == "Enflame":
+					effect.applied_by.get_node("AnimationPlayer").play("Move_forward")
+					animate_combat(effect.applied_by, actor)
+					yield(get_tree().create_timer(1.2), "timeout")
+					effect.applied_by.get_node("AnimationPlayer").play("Move_freturn")
+					yield(get_tree().create_timer(0.2), "timeout")
 
-		var active_actors = []
-		for actor in party_actors:
-			if actor.active:
-				active_actors.append(actor)
-		if active_actors.empty():
-			print("No active actors")
-		else:
-			enemy_ai.start_turn(active_actors, enemy_actors)
+
+
+		enemy_ai.start_turn(active_actors, enemy_actors)
 
 func set_target(actor : Actor):
 	if target != null:
@@ -168,7 +178,7 @@ func _unhandled_input(event : InputEvent):
 		if event.button_index == BUTTON_RIGHT and event.pressed:
 			reset_selections()
 
-	if event.is_action_pressed("end_turn"):
+	if event.is_action_pressed("end_turn") and !$AnimationPlayer.is_playing():
 		end_turn()
 
 func _on_Actor_try_toggle(actor : Actor, activate : bool):

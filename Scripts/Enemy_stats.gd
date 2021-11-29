@@ -8,9 +8,10 @@ enum Enemy_type {
 
 onready var mana_bar = $Stats/Mana
 
-export(int) var max_mana := 100
+export(int) var max_mana := 50
 export(Enemy_type) var enemy_type
 var mana : int
+var last_action := -1
 
 signal die()
 
@@ -30,7 +31,7 @@ func set_mana(value : int):
 func lose_mana(amount : int):
     mana -= amount
     mana_bar.value = mana
-    $Tween.interpolate_property($Stats/Follow, "value", null, mana, 0.5)
+    $Tween.interpolate_property($Stats/Follow, "value", null, mana, 0.8)
     $Tween.start()
     if mana <= 0:
         die()

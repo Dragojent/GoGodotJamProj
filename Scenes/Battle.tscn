@@ -6,9 +6,8 @@
 [ext_resource path="res://Assets/bar_fill.png" type="Texture" id=4]
 [ext_resource path="res://Assets/bar.png" type="Texture" id=5]
 [ext_resource path="res://Resources/Actions/A_Slash.tres" type="Resource" id=6]
-[ext_resource path="res://Resources/Actions/A_Strong_slash.tres" type="Resource" id=7]
+[ext_resource path="res://Resources/Actions/A_Barrage.tres" type="Resource" id=7]
 [ext_resource path="res://Scripts/Enemy_AI.gd" type="Script" id=8]
-[ext_resource path="res://Scenes/Enemy_stats.tscn" type="PackedScene" id=9]
 [ext_resource path="res://Scripts/Stats.gd" type="Script" id=10]
 [ext_resource path="res://Scenes/Actor_info.tscn" type="PackedScene" id=11]
 [ext_resource path="res://Assets/Chars/Wizard_idle.png" type="Texture" id=12]
@@ -39,12 +38,17 @@
 [ext_resource path="res://Assets/Sounds/bell.wav" type="AudioStream" id=37]
 [ext_resource path="res://Assets/Sounds/strike.wav" type="AudioStream" id=38]
 [ext_resource path="res://Assets/Sounds/fancy_magic.wav" type="AudioStream" id=39]
+[ext_resource path="res://Resources/Actions/A_Snipe.tres" type="Resource" id=40]
+[ext_resource path="res://Resources/Actions/A_Weaken.tres" type="Resource" id=41]
+[ext_resource path="res://Resources/Actions/A_Enflame.tres" type="Resource" id=42]
+[ext_resource path="res://Resources/Actions/A_Strong_slash.tres" type="Resource" id=43]
+[ext_resource path="res://Resources/Actions/A_Armor_down.tres" type="Resource" id=44]
 
 [sub_resource type="Resource" id=2]
 script = ExtResource( 10 )
 upkeep = 1
 evasion = 0
-armor = 15
+armor = 8
 power = 10
 accuracy = 100
 
@@ -100,38 +104,6 @@ evasion = 30
 armor = 5
 power = 15
 accuracy = 80
-
-[sub_resource type="Resource" id=6]
-script = ExtResource( 10 )
-upkeep = 1
-evasion = 20
-armor = 0
-power = 10
-accuracy = 150
-
-[sub_resource type="Resource" id=7]
-script = ExtResource( 10 )
-upkeep = 1
-evasion = 60
-armor = 0
-power = 10
-accuracy = 70
-
-[sub_resource type="Resource" id=8]
-script = ExtResource( 10 )
-upkeep = 1
-evasion = 120
-armor = 5
-power = 5
-accuracy = 50
-
-[sub_resource type="Resource" id=9]
-script = ExtResource( 10 )
-upkeep = 1
-evasion = 5
-armor = 5
-power = 30
-accuracy = 90
 
 [sub_resource type="Animation" id=10]
 resource_name = "Combat"
@@ -460,7 +432,7 @@ attack_sound = ExtResource( 37 )
 [node name="Archer" parent="Actors/Party" instance=ExtResource( 1 )]
 position = Vector2( 112, 172 )
 stats = SubResource( 5 )
-actions = [ ExtResource( 7 ) ]
+actions = [ ExtResource( 7 ), ExtResource( 40 ) ]
 sprites = [ ExtResource( 17 ), ExtResource( 16 ), ExtResource( 18 ) ]
 attack_priority = 2
 attack_sound = ExtResource( 36 )
@@ -468,7 +440,7 @@ attack_sound = ExtResource( 36 )
 [node name="Wizard" parent="Actors/Party" instance=ExtResource( 1 )]
 position = Vector2( 24, 236 )
 stats = SubResource( 4 )
-actions = [ ExtResource( 6 ) ]
+actions = [ ExtResource( 42 ), ExtResource( 41 ) ]
 sprites = [ ExtResource( 12 ), ExtResource( 14 ), ExtResource( 13 ) ]
 attack_priority = 3
 attack_sound = ExtResource( 35 )
@@ -482,62 +454,26 @@ evasion_curve = SubResource( 1 )
 [node name="Mage" parent="Actors/Enemies" instance=ExtResource( 24 )]
 position = Vector2( 496, 31 )
 stats = SubResource( 12 )
-actions = [ ExtResource( 6 ) ]
+actions = [ ExtResource( 6 ), ExtResource( 43 ) ]
 sprites = [ ExtResource( 27 ), null, ExtResource( 26 ) ]
+attack_priority = 2
 attack_sound = ExtResource( 35 )
 
 [node name="Priest" parent="Actors/Enemies" instance=ExtResource( 24 )]
 position = Vector2( 584, 92 )
 stats = SubResource( 13 )
-actions = [ ExtResource( 6 ) ]
+actions = [ ExtResource( 41 ), ExtResource( 34 ), ExtResource( 44 ) ]
 sprites = [ ExtResource( 28 ), null, ExtResource( 29 ) ]
+attack_priority = 1
 attack_sound = ExtResource( 39 )
 
 [node name="Warrior" parent="Actors/Enemies" instance=ExtResource( 24 )]
 position = Vector2( 672, 153 )
 stats = SubResource( 14 )
-actions = [ ExtResource( 6 ) ]
+actions = [ ExtResource( 7 ), ExtResource( 40 ) ]
 sprites = [ ExtResource( 25 ), null, ExtResource( 30 ) ]
+attack_priority = 4
 attack_sound = ExtResource( 38 )
-
-[node name="EnemiesOLD" type="YSort" parent="Actors"]
-visible = false
-
-[node name="Actor" parent="Actors/EnemiesOLD" instance=ExtResource( 1 )]
-position = Vector2( 544, 48 )
-stats = SubResource( 6 )
-team = 1
-actions = [ ExtResource( 6 ) ]
-sprites = [ null, null, null ]
-
-[node name="Enemy_stats" parent="Actors/EnemiesOLD/Actor" instance=ExtResource( 9 )]
-
-[node name="Actor2" parent="Actors/EnemiesOLD" instance=ExtResource( 1 )]
-position = Vector2( 640, 108 )
-stats = SubResource( 7 )
-team = 1
-actions = [ ExtResource( 6 ) ]
-sprites = [ null, null, null ]
-
-[node name="Enemy_stats" parent="Actors/EnemiesOLD/Actor2" instance=ExtResource( 9 )]
-
-[node name="Actor3" parent="Actors/EnemiesOLD" instance=ExtResource( 1 )]
-position = Vector2( 736, 172 )
-stats = SubResource( 8 )
-team = 1
-actions = [ ExtResource( 6 ) ]
-sprites = [ null, null, null ]
-
-[node name="Enemy_stats" parent="Actors/EnemiesOLD/Actor3" instance=ExtResource( 9 )]
-
-[node name="Actor4" parent="Actors/EnemiesOLD" instance=ExtResource( 1 )]
-position = Vector2( 832, 236 )
-stats = SubResource( 9 )
-team = 1
-actions = [ ExtResource( 6 ) ]
-sprites = [ null, null, null ]
-
-[node name="Enemy_stats" parent="Actors/EnemiesOLD/Actor4" instance=ExtResource( 9 )]
 
 [node name="Camera2D" type="Camera2D" parent="."]
 position = Vector2( 512, 288 )

@@ -36,6 +36,7 @@ signal left_click(actor)
 signal lost_mana(actor, amount)
 signal hovered(actor, entered)
 signal animation_finished()
+signal die()
 
 func _ready():
 	$Click_area.connect("mouse_entered", self, "_on_Click_area_mouse_entered")
@@ -57,6 +58,13 @@ func _ready():
 	animation_player.connect("animation_started", self, "_on_Animation_started")
 
 	$Sprite.rect_pivot_offset = $Sprite.rect_size / 2
+
+	if team == Team.ENEMY:
+		get_node("Enemy_stats").connect("die", self, "_on_Die")
+
+func _on_Die():
+	emit_signal("die")
+	queue_free()
 
 func _on_Animation_started(_anim_name):
 	# animating = true
@@ -120,6 +128,7 @@ func untap():
 
 func start_turn():
 	for effect in effects:
+		print(effect.name)
 		effect.tick(self)
 	untap()
 
@@ -143,6 +152,7 @@ func use_mana(source, amount : int):
 		amount = 1
 
 	if source is Effect:
+		print(source.name)
 		source.applied_by.dmg_num(amount)
 
 	yield(get_tree().create_timer(1.3), "timeout")
@@ -153,8 +163,16 @@ func use_mana(source, amount : int):
 		get_node("Enemy_stats").lose_mana(amount)
 
 func dmg_num(amount : int):
-	dmg_number.text += str(amount)
-	$Damage_number.get_node("AnimationPlayer").play("animate")
+	if $Damage_number/AnimationPlayer.is_playing():
+		if $Damage_number2/AnimationPlayer.is_playing():
+			$Damage_number3/Label.text = str(amount)
+			$Damage_number3/AnimationPlayer.play("animate")
+		else:
+			$Damage_number2/Label.text = str(amount)
+			$Damage_number2/AnimationPlayer.play("animate")
+	else:
+		dmg_number.text = str(amount)
+		$Damage_number.get_node("AnimationPlayer").play("animate")
 
 
 func use_action(action_index : int, target):
@@ -174,7 +192,6 @@ func use_action(action_index : int, target):
 			dmg_number.text = ""
 		CRIT:
 			power_multiplier = 1.5
-			dmg_number.text = str("!")
 
 	print(str(self) + " used " + actions[action_index].name + " on " + str(target) + ": ")
 	actions[action_index].execute(self, target, power_multiplier)
