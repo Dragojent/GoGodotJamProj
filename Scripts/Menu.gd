@@ -7,4 +7,4 @@ func _on_Button2_pressed():
 
 func _on_Button_pressed():
 	# AudioServer.set_bus_volume_db(AudioServer.get_bus_index("Master"), -80)
-	get_tree().change_scene("res://Scenes/Battle.tscn")
+	get_tree().change_scene("res://Scenes/Battle1.tscn")

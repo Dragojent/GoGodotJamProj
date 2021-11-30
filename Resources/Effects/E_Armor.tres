@@ -5,4 +5,4 @@
 [resource]
 script = ExtResource( 1 )
 name = "Armor"
-duration = 3
+duration = 2

@@ -20,6 +20,8 @@ func start_turn(party_actors, enemy_actors):
 		var action = wrapi(actor.get_node("Enemy_stats").last_action + 1, 0, actor.actions.size())
 		actor.get_node("Enemy_stats").last_action = action
 		var target = find_target(actor, action, enemy_actors, party_actors)
+		if actor.actions[action].can_target.size() == 0:
+			target = actor
 
 
 		# actor.use_action(action, target)

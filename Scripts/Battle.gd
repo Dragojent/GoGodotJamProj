@@ -131,6 +131,10 @@ func end_turn():
 
 	current_turn = wrapi(current_turn + 1, 0, 2)
 
+	if current_turn == Actor.Team.PARTY and mana == 0:
+		print("end")
+		$AnimationPlayer.play("Defeat")
+
 	reset_selections()
 
 	if current_turn == Actor.Team.PARTY:
@@ -187,11 +191,12 @@ func set_selected_action(action_index):
 
 func lose_mana(amount : int):
 	mana -= amount
-	if mana > 0:
-		mana_pool.get_node("Amount").value = mana
-		$Tween.interpolate_property(mana_pool.get_node("Follow"), "value", null, mana, 0.4)
-		$Tween.start()
-	else:
+	if mana < 0:
+		mana = 0
+	mana_pool.get_node("Amount").value = mana
+	$Tween.interpolate_property(mana_pool.get_node("Follow"), "value", null, mana, 0.4)
+	$Tween.start()
+	if current_turn == Actor.Team.PARTY and mana == 0:
 		$AnimationPlayer.play("Defeat")
 
 func set_mana(amount : int):
