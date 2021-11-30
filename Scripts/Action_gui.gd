@@ -3,14 +3,16 @@ extends MarginContainer
 var index := 0
 var selected := false
 
+
 signal clicked(action_index)
 
 func _ready():
     connect("gui_input", self, "_on_gui_input")
 
-func init(name : String, overview : String, p_index : int): 
+func init(name : String, overview : String, mana_cost : int, p_index : int): 
     $Background/Name.text = name
     $Background/Overview.text = overview
+    $Background/Mana_cost.text = str(mana_cost)
     index = p_index
 
 func _on_gui_input(event):

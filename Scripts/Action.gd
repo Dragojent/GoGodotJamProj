@@ -16,7 +16,7 @@ export(Array, Resource) var self_effects := []
 
 func execute(actor, target, power_multiplier := 1.0):
 	rng.randomize()
-	if mana_cost > 0:
+	if mana_cost > 0 and actor.team == Actor.Team.PARTY:
 		actor.use_mana(self, mana_cost)
 
 	power_multiplier = power_multiplier * rng.randf_range(0.8, 1.2)

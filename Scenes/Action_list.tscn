@@ -17,9 +17,11 @@ __meta__ = {
 [node name="HBoxContainer" type="VBoxContainer" parent="."]
 margin_right = 600.0
 margin_bottom = 100.0
+alignment = 1
 
 [node name="VBoxContainer" type="HBoxContainer" parent="HBoxContainer"]
+margin_top = 10.0
 margin_right = 600.0
-margin_bottom = 100.0
-rect_min_size = Vector2( 0, 100 )
+margin_bottom = 90.0
+rect_min_size = Vector2( 0, 80 )
 alignment = 1

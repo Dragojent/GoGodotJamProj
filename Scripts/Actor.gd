@@ -28,6 +28,7 @@ export(Resource) var attack_sound
 var tapped := false
 var active := false
 var animating := false
+var targeting := false
 
 var effects := []
 
@@ -36,7 +37,7 @@ signal left_click(actor)
 signal lost_mana(actor, amount)
 signal hovered(actor, entered)
 signal animation_finished()
-signal die()
+signal die(actor)
 
 func _ready():
 	$Click_area.connect("mouse_entered", self, "_on_Click_area_mouse_entered")
@@ -63,7 +64,9 @@ func _ready():
 		get_node("Enemy_stats").connect("die", self, "_on_Die")
 
 func _on_Die():
-	emit_signal("die")
+	emit_signal("die", self)
+	animation_player.play("Die")
+	yield(get_tree().create_timer(0.3), "timeout")
 	queue_free()
 
 func _on_Animation_started(_anim_name):
@@ -80,7 +83,7 @@ func _on_Click_area_mouse_entered():
 		emit_signal("hovered", self, true)
 
 func _on_Click_area_mouse_exited():
-	if !animating:
+	if !animating and !targeting:
 		$Sprite.material.set_shader_param("active", false)
 		emit_signal("hovered", self, false)
 
@@ -106,9 +109,15 @@ func _on_Click_area_input(event):
 
 func set_highlight(state : bool):
 	if state == true:
-		$Sprite.modulate = Color(1, 0, 0, 1)
+		# $Sprite.modulate = Color(1, 0, 0, 1)
+		$Sprite.material.set_shader_param("line_color", Color(255/104, 1, 0))
+		$Sprite.material.set_shader_param("active", true)
+		targeting = true
 	else:
-		$Sprite.modulate = Color(1, 1, 1, 1)
+		$Sprite.material.set_shader_param("line_color", Color(255/194, 255/225, 255/188))
+		$Sprite.material.set_shader_param("active", false)
+		targeting = false
+		# $Sprite.modulate = Color(1, 1, 1, 1)
 
 # func _input(event):
 # 	if event is InputEventMouseButton:
@@ -123,7 +132,7 @@ func tap():
 	tapped = true
 
 func untap():
-	animation_player.play("Untap")
+	$Hit.play("Untap")
 	tapped = false
 
 func start_turn():
@@ -136,8 +145,8 @@ func end_turn():
 	if team == Team.ENEMY:
 		untap()
 
-	if active and team == Team.PARTY:
-		use_mana(self, stats.upkeep)
+	# if active and team == Team.PARTY:
+	# 	use_mana(self, stats.upkeep)
 
 func receive_effect(effect : Effect):
 	effect.connect("expired", self, "_on_Effect_expired")
@@ -151,7 +160,9 @@ func use_mana(source, amount : int):
 	if amount <= 0:
 		amount = 1
 
+
 	if source is Effect:
+		$Hit.play("Take_damage")
 		print(source.name)
 		source.applied_by.dmg_num(amount)
 

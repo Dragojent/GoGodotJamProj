@@ -6,9 +6,9 @@
 [resource]
 script = ExtResource( 1 )
 name = "Slash"
-overview = "Slice your enemies to bits"
+overview = "Slice your foes to bits"
 can_target = [ 1 ]
-mana_cost = 5
+mana_cost = 0
 power = 1.0
 accuracy_bonus = 0
 effects = [ ExtResource( 2 ) ]

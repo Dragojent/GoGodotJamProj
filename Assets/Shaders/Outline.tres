@@ -8,11 +8,12 @@ uniform float line_thickness : hint_range(0, 10) = 1.0;
 uniform bool active = false;
 
 void fragment() {
+	vec4 color = texture(TEXTURE, UV);
 	if (!active) {
 		COLOR = texture(TEXTURE, UV);
 	}
 	else {
-		vec4 color = texture(TEXTURE, UV);
+
 		
     	vec2 size = TEXTURE_PIXEL_SIZE * line_thickness;
 		float outline = texture(TEXTURE, UV + vec2(-size.x, 0)).a;

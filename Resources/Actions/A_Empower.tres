@@ -1,0 +1,15 @@
+[gd_resource type="Resource" load_steps=3 format=2]
+
+[ext_resource path="res://Scripts/Action.gd" type="Script" id=1]
+[ext_resource path="res://Resources/Effects/E_Empower.tres" type="Resource" id=2]
+
+[resource]
+script = ExtResource( 1 )
+name = "Empower"
+overview = "Strengthen your body for a short amount of time"
+can_target = [  ]
+mana_cost = 0
+power = 1.0
+accuracy_bonus = 100
+effects = [ ExtResource( 2 ) ]
+self_effects = [  ]

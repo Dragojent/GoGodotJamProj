@@ -11,7 +11,7 @@ func display_actions(actor : Actor):
 	var index = 0
 	for action in actor.actions:
 		var action_gui = Action_gui.instance()
-		action_gui.init(action.name, action.overview, index)
+		action_gui.init(action.name, action.overview, action.mana_cost, index)
 		action_gui.connect("clicked", self, "_on_Action_clicked")
 		actions.add_child(action_gui)
 		index += 1
@@ -19,7 +19,7 @@ func display_actions(actor : Actor):
 	show()
 
 func close():
-	hide()
+	# hide()
 	for child in actions.get_children():
 		actions.remove_child(child)
 
